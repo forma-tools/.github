@@ -1,156 +1,296 @@
 # Forma
 
-**A unified CLI ecosystem for agentic development.**
+[![GitHub](https://img.shields.io/badge/github-forma--tools%2Fforma-blue?logo=github)](https://github.com/forma-tools/forma)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Tools](https://img.shields.io/badge/tools-143-orange.svg)](#available-tools)
 
-Forma standardises CLI tools so they all behave the same way. Same command structure. Same JSON output. Same exit codes. Same auth flow. One protocol across 130+ tools - instantly usable by both humans and AI agents.
+> A unified CLI ecosystem for agentic development.
 
-## The Problem
+Forma is a protocol and ecosystem that standardises CLI tools for consistent behaviour across agentic workflows. Instead of wrestling with different output formats, flag conventions, and error handling patterns for every API, Forma tools follow a single protocol that makes them predictable and composable.
 
-Every SaaS API has its own CLI with its own quirks. Different flags, different output shapes, different error handling. This breaks automation. AI agents can't reliably chain tools when each one speaks a different language.
+The core insight: AI assistants and power users need tools that behave consistently. When every CLI has its own quirks, automation breaks. Forma solves this by defining a protocol that covers command structure, JSON output shapes, exit codes, authentication patterns, and stream separation. Any tool that follows the protocol becomes instantly usable by both humans and AI.
 
-## The Solution
+The ecosystem includes 64 Forma CLIs for popular SaaS APIs, 30 vendor CLIs, 48 system tools, and an MCP server - 143 capabilities across 16 collections, tracked in a central registry. An always-on daemon with a persistent Claude session orchestrates the ecosystem, accumulates knowledge, and is accessible from anywhere via remote control.
 
-```bash
-# Every Forma tool works the same way
-<tool> <resource> <action> [--json] [--limit N] [--fields a,b,c]
+## Why Forma?
 
-# Predictable JSON output
-{ "data": [...], "meta": { "count": 20 } }
+### The Problem
 
-# Semantic exit codes
-# 0 = success, 2 = auth required, 3 = not found, 6 = rate limited
+Every SaaS API has its own CLI (or none at all). Each one:
+- Has different flags (`-j` vs `--json` vs `--format json`)
+- Outputs different shapes (arrays, objects, wrapped, raw)
+- Uses different exit codes (or just 0/1)
+- Mixes progress bars with data in stdout
 
-# Unified auth
-<tool> auth login / status / logout
-```
+This chaos breaks agentic workflows where AI assistants need to **discover**, **invoke**, and **chain** tools reliably.
 
-## The Ecosystem
+### The Solution
 
-**130 capabilities** organised into collections:
+Forma is a **protocol** + **ecosystem** + **daemon** that makes CLI tools:
 
-| Collection | Tools | What You Can Do |
-|------------|-------|-----------------|
-| **Productivity** | Xero, Harvest, Asana, Notion, HubSpot, Calendly, Shortcut | Invoicing, time tracking, project management, CRM, scheduling |
-| **Marketing** | Ahrefs, SEMrush, Google Ads, Google Search Console | SEO audits, keyword research, PPC campaigns, search analytics |
-| **Analytics** | GA4, GTM, GTmetrix, Looker | Web analytics, tag management, performance testing, reporting |
-| **CMS** | WordPress, Shopify, Contentful, Sanity, Strapi, Storyblok, Payload, EmDash | Content management, ecommerce, headless CMS |
-| **Infrastructure** | AWS Pricing, Supabase, Vercel, Netlify, Cloudflare, Doppler, 1Password | Cloud costing, deployment, secrets, CDN, edge computing |
-| **Domains** | Namecheap, Porkbun, DNSimple, Name.com, dprobe | Domain registration, DNS management, WHOIS, reconnaissance |
-| **Communications** | Slack, Gmail (Gwark), Twilio, Resend, Dialpad, Calendly | Messaging, email, SMS, voice, scheduling |
-| **AI** | Grok, Perplexity, ElevenLabs | LLM chat, search-grounded AI, text-to-speech |
-| **Data** | Firecrawl, CommonCrawl, Raindrop, Trove, Wikimedia | Web scraping, archival research, bookmarks |
-| **Finance** | Xero, Harvest, Stripe, Currency | Accounting, payments, exchange rates |
-| **Geo** | Mapbox, Mapillary, Nominatim, OpenStreetMap, Google Places | Geocoding, street imagery, spatial queries |
-| **Media** | Figma, ElevenLabs, Crunch, FFmpeg | Design, audio, video optimisation |
+| Property | Without Forma | With Forma |
+|----------|---------------|------------|
+| **Discovery** | Read docs, guess flags | `forma list`, then `<tool> --help` |
+| **Output** | Random JSON shapes | Always `{data: [...], meta: {...}}` |
+| **Chaining** | Hope it works | `tool1 --json \| jq '.data' \| tool2` |
+| **Errors** | Parse error messages | Exit code 3 = not found, 2 = auth required |
+| **Auth** | Different for each | Always `<tool> auth login/status/logout` |
+| **Orchestration** | Manual | Always-on daemon with schedules, monitors, and memory |
 
-**53 Forma CLIs** built to the protocol, **28 vendor CLIs** registered from official providers, **48 system tools** catalogued, **1 MCP server**.
+### Why Not MCP?
 
-## How It Works
+MCP is powerful, but it has a scaling problem: **every registered tool consumes context tokens**. With 2-3 MCP servers, you can burn 20% of your context window before you've started working. Try running 10+ tools and you're out of room.
 
-```bash
-# Discover what's available
-forma list
-forma list --collection productivity
-
-# Explore any tool
-xero --help
-xero invoices list --help
-
-# Get data as JSON - pipe to jq, feed to scripts
-xero invoices list --status DRAFT --json | jq '.data[].total'
-
-# Chain tools together
-harvest clients list --json | jq -r '.data[].name'
-CLIENT_ID=$(xero contacts search --name "Acme" --json | jq -r '.data[0].id')
-xero invoices list --contact "$CLIENT_ID" --json
-
-# Define infrastructure in YAML and cost it
-aws-pricing configs cost production.yaml --json
-
-# Generate client-ready quotes
-aws-pricing configs quote production.yaml --format xlsx
-```
-
-## Why Not MCP?
-
-MCP is powerful for 2-3 integrations. But every registered tool consumes context tokens. With 10+ tools, you burn your context window before you've started working.
-
-| | MCP | Forma |
-|---|---|---|
+| Aspect | MCP | Forma |
+|--------|-----|-------|
 | **Context cost** | All tools loaded upfront | Zero until invoked |
 | **10+ tools** | Context explosion | No problem |
 | **Tool chaining** | Through the model | Direct stdout piping |
-| **Discovery** | Model reads schemas | `forma list` + `--help` |
-| **Offline** | Needs server running | Just CLI binaries |
+| **Discovery** | Model reads tool schemas | `forma list` + `--help` |
 
-Forma tools cost **zero tokens until invoked**. Discover with `forma list`, invoke on demand, chain via stdout. MCP is great for real-time integrations. Forma is for ecosystems of tools at scale.
+MCP is great for 2-3 frequently-used integrations. Forma is for ecosystems of 10+ tools where context efficiency matters.
+
+### Who Is This For?
+
+- **AI Assistants** (Claude Code, Codex, Gemini) - Discover and use tools without MCP overhead
+- **Power Users** - Chain tools with jq, build automation scripts
+- **Developers** - Ship CLIs that work in agentic workflows
+- **Entrepreneurs** - Always-on daemon manages tools across workspaces (agencies, clients, personal)
 
 ## Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                     WORKSPACES                                │
-│  Org-specific: credentials, playbooks, context documents     │
-├──────────────────────────────────────────────────────────────┤
-│                     FORMA CORE                                │
-│  Protocol · Registry · SDK · Agent Pipeline                  │
-├──────────────────────────────────────────────────────────────┤
-│                     CLI TOOLS                                 │
-│  53 Forma CLIs · 28 Vendor CLIs · 48 System Tools            │
-└──────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------------------------+
+|                        FORMA ECOSYSTEM (143 capabilities)                         |
++-----------------------------------------------------------------------------------+
+|                                                                                   |
+|  64 Forma CLIs        30 Vendor CLIs        48 System Tools       1 MCP          |
+|  +---------+--+--+     +-----+-----+--+     +-----+-----+--+     +-----+        |
+|  |xero|harv|..|  |     |gws|gh|wrng|  |     |jq|ffm|pan|  |     |cf-mcp|       |
+|  +----+----+--+--+     +---+--+----+--+     +--+---+---+--+     +------+        |
+|       |                      |                    |                    |          |
+|       +----------+-----------+--------------------+--------------------+          |
+|                  |                                                                |
+|         +--------v--------+          +---------------------------+               |
+|         | FORMA PROTOCOL  |          |     FORMA DAEMON (OS)     |               |
+|         |                 |          |                           |               |
+|         |  - --json       |          |  Kernel: process monitor  |               |
+|         |  - --help       |          |  User space: per-workspace|               |
+|         |  - exit codes   |          |    - SOUL.md (identity)   |               |
+|         |  - auth pattern |          |    - memory/ (knowledge)  |               |
+|         |  - {data, meta} |          |    - journal/ (activity)  |               |
+|         |  - --no-cache   |          |    - persistent session   |               |
+|         +--------+--------+          |    - schedules + monitors |               |
+|                  |                   +-------------+-------------+               |
+|    +-------------+-------------+                   |                              |
+|    v                           v                   v                              |
+|  +------------------+       +------------------+  +------------------+           |
+|  |   AI Assistants  |       |   Power Users    |  |  Remote Control  |           |
+|  | (Claude/Gemini)  |       |   (Shell/jq)     |  | (Phone/Browser)  |           |
+|  +------------------+       +------------------+  +------------------+           |
+|                                                                                   |
++-----------------------------------------------------------------------------------+
 ```
 
-**Workspaces** group tools by organisation with shared credentials and automation playbooks. **Forma Core** provides the protocol specification, unified registry, and an async SDK for building multi-step workflows. **CLI Tools** are standalone binaries that follow the protocol.
+## Quick Start
+
+```bash
+# What tools are available?
+forma list
+
+# What can Xero do?
+xero --help
+
+# List draft invoices as JSON
+xero invoices list --status DRAFT --json
+
+# Pipe between tools
+harvest clients list --json | jq -r '.data[].name' | head -5
+
+# Check auth status
+xero auth status --json
+```
+
+## The Daemon
+
+An always-on orchestrator that monitors, schedules, and learns across the ecosystem. Follows an OS architecture: shared kernel for process monitoring, isolated user-space daemons per workspace.
+
+### What It Does
+
+- **Schedules** - Cron-triggered tasks (daily audits, weekly verification, monthly billing)
+- **Monitors** - Condition-triggered reactions (uncommitted changes, credential expiry, registry drift)
+- **Memory** - Accumulates knowledge as flat .md files. Patterns, facts, warnings, preferences. Never decays.
+- **Journal** - Daily activity log with monthly archival
+- **Persistent Session** - The daemon IS a Claude session, not just a spawner. Accumulates context across ticks.
+- **Remote Control** - Drop in from your phone, tablet, or any browser via claude.ai/code
+
+### Workspace Isolation
+
+Each workspace gets its own daemon with its own identity, memory, and context. Like separate user accounts on the same OS.
+
+```bash
+forma daemon --workspace default install       # Personal daemon
+forma daemon --workspace evolution7 install     # Agency daemon
+forma daemon services                           # See all daemons
+forma daemon health                             # Cross-workspace view
+```
+
+### Talk To It
+
+```bash
+forma daemon chat                  # Interactive session with remote control
+forma daemon ask "morning briefing"  # Quick context-aware question
+forma daemon status                # What's happening
+forma daemon journal               # What happened today
+forma daemon memory list           # What it's learned
+```
+
+### Agent Pipeline
+
+Five specialised agent roles for autonomous tool development:
+
+```
+Scout --> Architect(s) --> Verifier(s) --> Inspector(s)
+              ^                |               |
+              +-- fix (max 3) -+---------------+
+
+Warden (independent, on-demand registry custodian)
+```
+
+## Registry and Discovery
+
+The Forma registry is the central mechanism for tool discovery. 143 tools across 16 collections.
+
+### How It Works
+
+1. **Registration**: Each tool declares itself in its `pyproject.toml` with a `[tool.forma]` section
+2. **Discovery**: Run `forma list` to see all registered tools
+3. **Exploration**: Run `<tool> --help` for any tool's commands and options
+4. **Execution**: All tools follow the same patterns, so knowledge transfers
+
+### Collections
+
+| Collection | Description |
+|------------|-------------|
+| productivity | Project management, time tracking, scheduling |
+| marketing | SEO, analytics, advertising, social media |
+| analytics | Data analysis, reporting, business intelligence |
+| cms | Content management systems |
+| domains | Domain registration, DNS, SSL |
+| infra | Cloud infrastructure, deployment, CDN |
+| comms | Email, SMS, voice, messaging |
+| ai | AI models, embeddings, generation |
+| geo | Mapping, geocoding, location services |
+| crawl | Web scraping, crawling, rendering |
+| data | Data processing, databases, ETL |
+| finance | Accounting, payments, invoicing |
+| crypto | Cryptocurrency, trading, DeFi |
+| media | Video, audio, image processing |
+| osint | Open-source intelligence, reconnaissance |
+| security | Secrets management, vulnerability scanning |
 
 ## The Protocol
 
-26 specification sections covering every aspect of CLI behaviour:
+All Forma tools follow the [Forma Protocol](docs/protocol/00-index.md):
 
-- **Command architecture** - `<tool> <resource> <action>` pattern
-- **Output specification** - `{data, meta}` envelope, stream separation
-- **Exit codes** - semantic codes 0-7 for scripting
-- **Authentication** - `auth login/status/logout` with keyring storage
-- **Agent safety** - input validation, prompt injection defence
-- **Caching** - TTL-based with `--no-cache` and `--refresh`
-- **README standard** - consistent badges, structure, examples
-- **Supply chain security** - lockfiles, 7-day quarantine, vulnerability scanning
+### Command Structure
 
-## SDK
-
-The Forma SDK (v0.2) provides async primitives for building automation:
-
-- **Async by default** - concurrent step execution via DAG dependencies
-- **State persistence** - crash recovery, resume from last successful step
-- **Retry policies** - exponential backoff with rate limit awareness
-- **Structured results** - `ToolResult` with exit code semantics, no exception-driven flow
-- **Input validation** - Pydantic models validated before execution
-
-```python
-from forma_sdk import Playbook, step, RETRY_RATE_LIMIT
-
-class ClientOnboarding(Playbook):
-    @step("Create billing contact", retry=RETRY_RATE_LIMIT)
-    async def create_contact(self, client_name, email, **kw):
-        result = await self.tools.xero("contacts", "create",
-            name=client_name, email=email)
-        result.raise_for_status()
-        return {"contact_id": result.data["data"]["ContactID"]}
+```
+<tool> <resource> <action> [OPTIONS] [ARGS]
 ```
 
-## Agent Pipeline
+### Standard Flags
 
-Five autonomous agent roles for building and maintaining tools at scale:
-
-| Role | Purpose |
+| Flag | Purpose |
 |------|---------|
-| **Scout** | Evaluate build-or-buy decisions for new tools |
-| **Architect** | Design and scaffold CLI tools |
-| **Verifier** | Static protocol compliance checking |
-| **Inspector** | Install, write tests, validate runtime |
-| **Warden** | Registry custodian, ecosystem integrity |
+| `--json` | Machine-readable output to stdout |
+| `--help` | Show usage with examples |
+| `--version` | Show version |
+| `--limit N` | Limit results |
+| `--quiet` | Suppress non-essential output |
+| `--fields` | Comma-separated fields to include in JSON output |
+| `--dry-run` | Preview mutation without executing |
 
-Agents run headlessly in parallel, enabling batch tool creation with automated quality assurance.
+### JSON Output Shape
 
----
+**Lists:**
+```json
+{
+  "data": [{"id": "1", "name": "Item 1"}, ...],
+  "meta": {"count": 10, "timestamp": "2025-01-28T12:00:00Z"}
+}
+```
 
-*Built by [@0xDarkMatter](https://github.com/0xDarkMatter)*
+**Single items:**
+```json
+{
+  "data": {"id": "1", "name": "Item 1", ...},
+  "meta": {"timestamp": "2025-01-28T12:00:00Z"}
+}
+```
+
+### Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| 0 | Success |
+| 1 | Error |
+| 2 | Auth required |
+| 3 | Not found |
+| 4 | Validation |
+| 5 | Permission denied |
+| 6 | Conflict |
+| 7 | Rate limited |
+
+### Stream Separation
+
+```bash
+# stdout = data only (JSON when --json)
+# stderr = human output (progress, errors, tables)
+xero invoices list --json 2>/dev/null | jq '.data[0]'
+```
+
+## Credential Management
+
+Forma tools use `forma_auth` for unified credential storage:
+
+- **OS Keyring** as primary storage (macOS Keychain, Windows Credential Manager)
+- **`.env` file** fallback when keyring is unavailable
+- **Environment variables** override for CI/testing
+
+```bash
+xero auth login          # Store credentials
+xero auth status --json  # Check where credentials come from
+xero auth logout         # Remove credentials
+```
+
+## Creating a New Tool
+
+```bash
+# Copy the template
+copier copy templates/cli-tool ./my-tool
+
+# Install in development mode
+cd my-tool && uv pip install -e .
+
+# Register with Forma
+forma sync
+```
+
+### Minimum Requirements
+
+1. **pyproject.toml** with `[tool.forma]` section
+2. **CLI entry point** following the protocol (`{data, meta}` envelope, exit codes, `--json`)
+3. **Auth commands** if auth required (`auth login/status/logout`)
+4. **AGENTS.md** for AI assistant context
+
+See the [Forma Protocol](docs/protocol/00-index.md) for the complete specification (27 sections).
+
+## For AI Assistants
+
+See [AGENTS.md](AGENTS.md) for discovery patterns, command structure, JSON output shapes, exit codes, and chaining examples.
+
+## License
+
+MIT
