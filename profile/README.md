@@ -65,7 +65,7 @@ MCP is great for 2-3 frequently-used integrations. Forma is for ecosystems of 10
 |                        FORMA ECOSYSTEM (171 capabilities)                         |
 +-----------------------------------------------------------------------------------+
 |                                                                                   |
-|  67 Forma CLIs        47 Vendor CLIs        48 System Tools       1 MCP          |
+|  70 Forma CLIs        52 Vendor CLIs        48 System Tools       1 MCP          |
 |  +---------+--+--+     +-----+-----+--+     +-----+-----+--+     +-----+        |
 |  |xero|harv|..|  |     |gws|gh|wrng|  |     |jq|ffm|pan|  |     |cf-mcp|       |
 |  +----+----+--+--+     +---+--+----+--+     +--+---+---+--+     +------+        |
@@ -160,7 +160,7 @@ Warden (independent, on-demand registry custodian)
 
 ## Registry and Discovery
 
-The Forma registry is the central mechanism for tool discovery. 163 tools across 17 collections.
+The Forma registry is the central mechanism for tool discovery. 171 tools across 17 collections.
 
 ### How It Works
 
