@@ -3,7 +3,7 @@
 [![GitHub](https://img.shields.io/badge/github-forma--tools%2Fforma-blue?logo=github)](https://github.com/forma-tools/forma)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Tools](https://img.shields.io/badge/tools-143-orange.svg)](#available-tools)
+[![Tools](https://img.shields.io/badge/tools-163-orange.svg)](#available-tools)
 
 > A unified CLI ecosystem for agentic development.
 
@@ -11,7 +11,7 @@ Forma is a protocol and ecosystem that standardises CLI tools for consistent beh
 
 The core insight: AI assistants and power users need tools that behave consistently. When every CLI has its own quirks, automation breaks. Forma solves this by defining a protocol that covers command structure, JSON output shapes, exit codes, authentication patterns, and stream separation. Any tool that follows the protocol becomes instantly usable by both humans and AI.
 
-The ecosystem includes 64 Forma CLIs for popular SaaS APIs, 30 vendor CLIs, 48 system tools, and an MCP server - 143 capabilities across 16 collections, tracked in a central registry. An always-on daemon with a persistent Claude session orchestrates the ecosystem, accumulates knowledge, and is accessible from anywhere via remote control.
+The ecosystem includes 67 Forma CLIs for popular SaaS APIs, 47 vendor CLIs, 48 system tools, and an MCP server - 163 capabilities across 17 collections, tracked in a central registry. An always-on daemon with a persistent Claude session orchestrates the ecosystem, accumulates knowledge, and is accessible from anywhere via remote control.
 
 ## Why Forma?
 
@@ -62,10 +62,10 @@ MCP is great for 2-3 frequently-used integrations. Forma is for ecosystems of 10
 
 ```
 +-----------------------------------------------------------------------------------+
-|                        FORMA ECOSYSTEM (143 capabilities)                         |
+|                        FORMA ECOSYSTEM (163 capabilities)                         |
 +-----------------------------------------------------------------------------------+
 |                                                                                   |
-|  64 Forma CLIs        30 Vendor CLIs        48 System Tools       1 MCP          |
+|  67 Forma CLIs        47 Vendor CLIs        48 System Tools       1 MCP          |
 |  +---------+--+--+     +-----+-----+--+     +-----+-----+--+     +-----+        |
 |  |xero|harv|..|  |     |gws|gh|wrng|  |     |jq|ffm|pan|  |     |cf-mcp|       |
 |  +----+----+--+--+     +---+--+----+--+     +--+---+---+--+     +------+        |
@@ -160,7 +160,7 @@ Warden (independent, on-demand registry custodian)
 
 ## Registry and Discovery
 
-The Forma registry is the central mechanism for tool discovery. 143 tools across 16 collections.
+The Forma registry is the central mechanism for tool discovery. 163 tools across 17 collections.
 
 ### How It Works
 
@@ -173,22 +173,23 @@ The Forma registry is the central mechanism for tool discovery. 143 tools across
 
 | Collection | Description |
 |------------|-------------|
-| productivity | Project management, time tracking, scheduling |
-| marketing | SEO, analytics, advertising, social media |
-| analytics | Data analysis, reporting, business intelligence |
-| cms | Content management systems |
-| domains | Domain registration, DNS, SSL |
-| infra | Cloud infrastructure, deployment, CDN |
-| comms | Email, SMS, voice, messaging |
-| ai | AI models, embeddings, generation |
-| geo | Mapping, geocoding, location services |
-| crawl | Web scraping, crawling, rendering |
-| data | Data processing, databases, ETL |
-| finance | Accounting, payments, invoicing |
-| crypto | Cryptocurrency, trading, DeFi |
-| media | Video, audio, image processing |
+| ai | LLM, search, speech synthesis |
+| analytics | Performance, tracking, reporting |
+| cms | Content management, ecommerce |
+| comms | Messaging, email, voice, scheduling |
+| crawl | Web scraping, crawling, change detection |
+| crypto | Cryptocurrency data |
+| data | Archival, research, bookmarks |
+| devtools | Developer CLI tools - code search, analysis, version control |
+| domains | Domain registration, DNS, WHOIS |
+| finance | Accounting, payments, exchange rates |
+| geo | Maps, places, spatial data, travel |
+| infra | Cloud, deployment, secrets, CDN |
+| marketing | SEO, PPC, content marketing |
+| media | Audio, video, design tools |
+| monitoring | Observability, alerting, incident management |
 | osint | Open-source intelligence, reconnaissance |
-| security | Secrets management, vulnerability scanning |
+| productivity | Business ops - PM, invoicing, CRM, scheduling |
 
 ## The Protocol
 
