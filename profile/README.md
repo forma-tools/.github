@@ -3,7 +3,7 @@
 [![GitHub](https://img.shields.io/badge/github-forma--tools%2Fforma-blue?logo=github)](https://github.com/forma-tools/forma)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Tools](https://img.shields.io/badge/tools-171-orange.svg)](#available-tools)
+[![Tools](https://img.shields.io/badge/tools-198-orange.svg)](#available-tools)
 
 > A unified CLI ecosystem for agentic development.
 
@@ -11,7 +11,7 @@ Forma is a protocol and ecosystem that standardises CLI tools for consistent beh
 
 The core insight: AI assistants and power users need tools that behave consistently. When every CLI has its own quirks, automation breaks. Forma solves this by defining a protocol that covers command structure, JSON output shapes, exit codes, authentication patterns, and stream separation. Any tool that follows the protocol becomes instantly usable by both humans and AI.
 
-The ecosystem includes 70 Forma CLIs for popular SaaS APIs, 52 vendor CLIs, 48 system tools, and an MCP server - 171 capabilities across 17 collections, tracked in a central registry. An always-on daemon with a persistent Claude session orchestrates the ecosystem, accumulates knowledge, and is accessible from anywhere via remote control.
+The ecosystem includes 78 Forma CLIs for popular SaaS APIs, 71 vendor CLIs, 48 system tools, and an MCP server - 198 capabilities across 17 collections, tracked in a central registry. An always-on daemon with a persistent Claude session orchestrates the ecosystem, accumulates knowledge, and is accessible from anywhere via remote control.
 
 ## Why Forma?
 
@@ -62,10 +62,10 @@ MCP is great for 2-3 frequently-used integrations. Forma is for ecosystems of 10
 
 ```
 +-----------------------------------------------------------------------------------+
-|                        FORMA ECOSYSTEM (171 capabilities)                         |
+|                        FORMA ECOSYSTEM (198 capabilities)                         |
 +-----------------------------------------------------------------------------------+
 |                                                                                   |
-|  70 Forma CLIs        52 Vendor CLIs        48 System Tools       1 MCP          |
+|  78 Forma CLIs        71 Vendor CLIs        48 System Tools       1 MCP          |
 |  +---------+--+--+     +-----+-----+--+     +-----+-----+--+     +-----+        |
 |  |xero|harv|..|  |     |gws|gh|wrng|  |     |jq|ffm|pan|  |     |cf-mcp|       |
 |  +----+----+--+--+     +---+--+----+--+     +--+---+---+--+     +------+        |
@@ -160,7 +160,7 @@ Warden (independent, on-demand registry custodian)
 
 ## Registry and Discovery
 
-The Forma registry is the central mechanism for tool discovery. 171 tools across 17 collections.
+The Forma registry is the central mechanism for tool discovery. 198 tools across 17 collections.
 
 ### How It Works
 
