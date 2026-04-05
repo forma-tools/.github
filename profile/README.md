@@ -11,7 +11,7 @@ Forma is a protocol and ecosystem that standardises CLI tools for consistent beh
 
 The core insight: AI assistants and power users need tools that behave consistently. When every CLI has its own quirks, automation breaks. Forma solves this by defining a protocol that covers command structure, JSON output shapes, exit codes, authentication patterns, and stream separation. Any tool that follows the protocol becomes instantly usable by both humans and AI.
 
-The ecosystem includes 78 Forma CLIs for popular SaaS APIs, 72 vendor CLIs, 48 system tools, and an MCP server - 199 capabilities across 17 collections, tracked in a central registry. An always-on daemon with a persistent Claude session orchestrates the ecosystem, accumulates knowledge, and is accessible from anywhere via remote control.
+The ecosystem includes 78 Forma CLIs for popular SaaS APIs, 72 vendor CLIs, 48 system tools, and an MCP server - 199 capabilities across 17 collections, tracked in a central registry. An always-on daemon with a persistent Claude session orchestrates the ecosystem - discovering new tools, building them autonomously, verifying compliance, writing tests, and maintaining registry integrity. It accumulates knowledge as flat files, runs daily quality sweeps, and is accessible from anywhere via remote control.
 
 ## Why Forma?
 
@@ -82,6 +82,9 @@ MCP is great for 2-3 frequently-used integrations. Forma is for ecosystems of 10
 |         |  - {data, meta} |          |    - journal/ (activity)  |               |
 |         |  - --no-cache   |          |    - persistent session   |               |
 |         +--------+--------+          |    - schedules + monitors |               |
+|                  |                   |    - auto-* agents:       |               |
+|                  |                   |      scout/verify/inspect |               |
+|                  |                   |      warden               |               |
 |                  |                   +-------------+-------------+               |
 |    +-------------+-------------+                   |                              |
 |    v                           v                   v                              |
@@ -158,6 +161,50 @@ Scout --> Architect(s) --> Verifier(s) --> Inspector(s)
 Warden (independent, on-demand registry custodian)
 ```
 
+### Autonomous Operations (auto-*)
+
+Four scheduled agents run daily to keep the ecosystem healthy:
+
+| Agent | Schedule | Purpose |
+|-------|----------|---------|
+| `auto-scout` | Fridays 06:00 | Discover new tools on GitHub, score against rubric, build or wrap |
+| `auto-verifier` | Daily 10:00 | Protocol compliance for tools changed in last 7 days |
+| `auto-inspector` | Daily 11:00 | Install, write tests, validate runtime for forma-cli tools |
+| `auto-warden` | Daily 12:00 | Registry integrity, ghost/orphan detection, GitHub metadata audit |
+
+The auto-scout finds gaps in the ecosystem and builds tools autonomously. The other three form a daily quality sweep - verifier catches compliance drift, inspector catches broken code, warden catches registry rot. All write journal entries for auditability.
+
+```bash
+forma daemon schedules                   # See all scheduled agents
+forma daemon journal                     # Read today's auto-* reports
+```
+
+### Headless Agent Spawning
+
+Any pipeline stage can run headless for batch operations:
+
+```bash
+# Spawn parallel architects for multiple tools
+claude -p "$(cat prompts/auto-scout.md)" --dangerously-skip-permissions
+
+# Prompt files live in the daemon workspace
+ls 00_workspaces/default/daemon/prompts/
+```
+
+### Cortex (Knowledge Graph)
+
+The daemon accumulates knowledge as flat `.md` files following the Karpathy pattern - simple, inspectable, git-friendly:
+
+- **SOUL.md** - Daemon identity, workspace context, behavioural guidelines
+- **memory/** - Facts, patterns, warnings, preferences. Never decays. Confidence ranks retrieval, not deletion.
+- **journal/** - Daily activity logs with monthly archival
+- **context/** - Assembled context injected into every headless agent spawn
+
+```bash
+forma daemon memory list                 # What it knows
+forma daemon memory search "auth"        # Find specific knowledge
+```
+
 ## Registry and Discovery
 
 The Forma registry is the central mechanism for tool discovery. 199 tools across 17 collections.
@@ -171,25 +218,25 @@ The Forma registry is the central mechanism for tool discovery. 199 tools across
 
 ### Collections
 
-| Collection | Description |
-|------------|-------------|
-| ai | LLM, search, speech synthesis |
-| analytics | Performance, tracking, reporting |
-| cms | Content management, ecommerce |
-| comms | Messaging, email, voice, scheduling |
-| crawl | Web scraping, crawling, change detection |
-| crypto | Cryptocurrency data |
-| data | Archival, research, bookmarks |
-| devtools | Developer CLI tools - code search, analysis, version control |
-| domains | Domain registration, DNS, WHOIS |
-| finance | Accounting, payments, exchange rates |
-| geo | Maps, places, spatial data, travel |
-| infra | Cloud, deployment, secrets, CDN |
-| marketing | SEO, PPC, content marketing |
-| media | Audio, video, design tools |
-| monitoring | Observability, alerting, incident management |
-| osint | Open-source intelligence, reconnaissance |
-| productivity | Business ops - PM, invoicing, CRM, scheduling |
+| Collection | Tools | Description |
+|------------|-------|-------------|
+| infra | 32 | Cloud, deployment, secrets, CDN |
+| data | 27 | Archival, research, bookmarks |
+| devtools | 25 | Code search, analysis, version control, package management |
+| osint | 19 | Open-source intelligence, reconnaissance |
+| productivity | 17 | Business ops - PM, invoicing, CRM, scheduling |
+| comms | 15 | Messaging, email, voice, scheduling |
+| ai | 13 | LLM, search, speech synthesis |
+| media | 13 | Audio, video, design tools |
+| finance | 12 | Accounting, payments, exchange rates |
+| geo | 11 | Maps, places, spatial data, travel |
+| cms | 10 | Content management, ecommerce |
+| domains | 10 | Domain registration, DNS, WHOIS |
+| monitoring | 9 | Observability, alerting, incident management |
+| analytics | 8 | Performance, tracking, reporting |
+| marketing | 8 | SEO, PPC, content marketing |
+| crypto | 7 | Cryptocurrency data |
+| crawl | 6 | Web scraping, crawling, change detection |
 
 ## The Protocol
 
@@ -268,6 +315,32 @@ xero auth logout         # Remove credentials
 
 ## Creating a New Tool
 
+### Via the Agent Pipeline (recommended)
+
+The fastest path is to let the daemon's agent pipeline handle it:
+
+```bash
+# Scout evaluates build-or-buy
+forma daemon ask "scout datadog"
+
+# Architect builds the tool (headless, autonomous)
+# Verifier checks protocol compliance
+# Inspector writes tests and validates runtime
+# Warden registers in the ecosystem
+```
+
+Or run the full pipeline in one session:
+
+```bash
+# Interactive
+"scout datadog, then build it"
+
+# Headless batch (multiple tools in parallel)
+claude -p "$(cat prompts/auto-scout.md)" --dangerously-skip-permissions
+```
+
+### Manual Creation
+
 ```bash
 # Copy the template
 copier copy templates/cli-tool ./my-tool
@@ -285,8 +358,24 @@ forma sync
 2. **CLI entry point** following the protocol (`{data, meta}` envelope, exit codes, `--json`)
 3. **Auth commands** if auth required (`auth login/status/logout`)
 4. **AGENTS.md** for AI assistant context
+5. **.gitignore** with standard Python ignores
+6. **README.md** with Forma badge, Quick Start, Key Commands table (min 60 lines vendor, 80 forma-cli)
+7. **GitHub topics** - minimum 3 (forma, cli, + domain)
 
 See the [Forma Protocol](docs/protocol/00-index.md) for the complete specification (27 sections).
+
+## SDK
+
+The `forma_sdk` (v0.2.0) provides async patterns for building Forma tools programmatically:
+
+```python
+from forma_sdk import FormaApp, Playbook
+
+app = FormaApp("my-tool")
+playbook = Playbook("daily-sync")
+```
+
+See `src/forma_sdk/` for the full API.
 
 ## For AI Assistants
 
