@@ -381,6 +381,30 @@ See `src/forma_sdk/` for the full API.
 
 See [AGENTS.md](AGENTS.md) for discovery patterns, command structure, JSON output shapes, exit codes, and chaining examples.
 
+## Recent Changes
+
+### v0.3.0 (April 2026)
+- **Cortex** - Daily autolearning loop: harvests signals, distills patterns, proposes and tests improvements in isolated worktrees, commits winners autonomously
+- **Persistent daemon** - Daemon is now a full Claude session with accumulated context, not just a task spawner
+- **Auto-agents** - Four daily agents: auto-scout (tool discovery), auto-verifier, auto-inspector, auto-warden
+- **OSINT collection** - 19 tools: Shodan, Censys, VirusTotal, Hunter.io, WiGLE, OpenCellID, crt.sh, HIBP and more
+- **Remote control** - Access daemon from any device via claude.ai/code
+- **199 tools** across 17 collections
+- Protocol v0.7.x - GitHub topics, supply chain security, versioning spec
+
+### v0.2.0 (April 2026)
+- **Renamed to Forma** (previously Clique, originally Fabric)
+- **forma_sdk v0.2.0** - Async, stateful playbook patterns
+- **Skills protocol** - forma-scout, forma-architect, forma-verifier, forma-inspector, forma-warden
+- **Headless agent pipeline** - Full Scout → Architect → Verifier → Inspector → Warden flow
+- **forma-spawn v2** - Parallel headless builder/verifier pattern
+
+### v0.1.0 (January 2026)
+- Initial ecosystem (as Fabric) - protocol, registry, workspace system
+- Core protocol spec (command structure, JSON envelope, exit codes, auth pattern)
+- Workspace architecture with playbooks
+- CLI tool templates and scaffolding
+
 ## License
 
 MIT
