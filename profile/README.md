@@ -3,7 +3,7 @@
 [![GitHub](https://img.shields.io/badge/github-forma--tools%2Fforma-blue?logo=github)](https://github.com/forma-tools/forma)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Tools](https://img.shields.io/badge/tools-199-orange.svg)](#available-tools)
+[![Tools](https://img.shields.io/badge/tools-210-orange.svg)](#available-tools)
 
 > A unified CLI ecosystem for agentic development.
 
@@ -11,7 +11,7 @@ Forma is a protocol and ecosystem that standardises CLI tools for consistent beh
 
 The core insight: AI assistants and power users need tools that behave consistently. When every CLI has its own quirks, automation breaks. Forma solves this by defining a protocol that covers command structure, JSON output shapes, exit codes, authentication patterns, and stream separation. Any tool that follows the protocol becomes instantly usable by both humans and AI.
 
-The ecosystem includes 78 Forma CLIs for popular SaaS APIs, 72 vendor CLIs, 48 system tools, and an MCP server - 199 capabilities across 17 collections, tracked in a central registry. An always-on daemon with a persistent Claude session orchestrates the ecosystem - discovering new tools, building them autonomously, verifying compliance, writing tests, and maintaining registry integrity. It accumulates knowledge as flat files, runs daily quality sweeps, and is accessible from anywhere via remote control.
+The ecosystem includes 84 Forma CLIs for popular SaaS APIs, 77 vendor CLIs, 48 system tools, and an MCP server - 210 capabilities across 24 collections, tracked in a central registry. An always-on daemon with a persistent Claude session orchestrates the ecosystem - discovering new tools, building them autonomously, verifying compliance, writing tests, and maintaining registry integrity. It accumulates knowledge as flat files, runs daily quality sweeps, and is accessible from anywhere via remote control.
 
 ## Why Forma?
 
@@ -62,10 +62,10 @@ MCP is great for 2-3 frequently-used integrations. Forma is for ecosystems of 10
 
 ```
 +-----------------------------------------------------------------------------------+
-|                        FORMA ECOSYSTEM (199 capabilities)                         |
+|                        FORMA ECOSYSTEM (210 capabilities)                         |
 +-----------------------------------------------------------------------------------+
 |                                                                                   |
-|  78 Forma CLIs        71 Vendor CLIs        48 System Tools       1 MCP          |
+|  84 Forma CLIs        77 Vendor CLIs        48 System Tools       1 MCP          |
 |  +---------+--+--+     +-----+-----+--+     +-----+-----+--+     +-----+        |
 |  |xero|harv|..|  |     |gws|gh|wrng|  |     |jq|ffm|pan|  |     |cf-mcp|       |
 |  +----+----+--+--+     +---+--+----+--+     +--+---+---+--+     +------+        |
@@ -207,7 +207,7 @@ forma daemon memory search "auth"        # Find specific knowledge
 
 ## Registry and Discovery
 
-The Forma registry is the central mechanism for tool discovery. 199 tools across 17 collections.
+The Forma registry is the central mechanism for tool discovery. 210 tools across 24 collections.
 
 ### How It Works
 
@@ -220,23 +220,30 @@ The Forma registry is the central mechanism for tool discovery. 199 tools across
 
 | Collection | Tools | Description |
 |------------|-------|-------------|
-| infra | 32 | Cloud, deployment, secrets, CDN |
-| data | 27 | Archival, research, bookmarks |
-| devtools | 25 | Code search, analysis, version control, package management |
+| devtools | 24 | Code search, analysis, version control, package management |
+| data | 22 | Archival, research, bookmarks |
+| infra | 21 | Cloud, deployment, CDN |
 | osint | 19 | Open-source intelligence, reconnaissance |
-| productivity | 17 | Business ops - PM, invoicing, CRM, scheduling |
 | comms | 15 | Messaging, email, voice, scheduling |
 | ai | 13 | LLM, search, speech synthesis |
 | media | 13 | Audio, video, design tools |
 | finance | 12 | Accounting, payments, exchange rates |
+| productivity | 12 | Business ops - PM, invoicing, scheduling |
 | geo | 11 | Maps, places, spatial data, travel |
-| cms | 10 | Content management, ecommerce |
+| cms | 10 | Content management |
 | domains | 10 | Domain registration, DNS, WHOIS |
+| databases | 9 | SQL, NoSQL, and vector databases - local and cloud |
 | monitoring | 9 | Observability, alerting, incident management |
 | analytics | 8 | Performance, tracking, reporting |
 | marketing | 8 | SEO, PPC, content marketing |
 | crypto | 7 | Cryptocurrency data |
 | crawl | 6 | Web scraping, crawling, change detection |
+| secrets | 6 | Secrets management, identity, and access control |
+| crm | 5 | CRM, sales, customer success, contracts |
+| social | 5 | Social media platforms and community tools |
+| ecommerce | 3 | Ecommerce platforms, storefronts, and inventory |
+| testing | 3 | Load testing, synthetic monitoring, and test data |
+| hr | 2 | HR, hiring, payroll, and people management |
 
 ## The Protocol
 
@@ -389,7 +396,12 @@ See [AGENTS.md](AGENTS.md) for discovery patterns, command structure, JSON outpu
 - **Auto-agents** - Four daily agents: auto-scout (tool discovery), auto-verifier, auto-inspector, auto-warden
 - **OSINT collection** - 19 tools: Shodan, Censys, VirusTotal, Hunter.io, WiGLE, OpenCellID, crt.sh, HIBP and more
 - **Remote control** - Access daemon from any device via claude.ai/code
-- **199 tools** across 17 collections
+- **Collections expansion** - 17 to 24 collections: databases, crm, secrets, ecommerce, testing, social, hr
+- **Social collection** - xfetch (X/Twitter), instaloader (Instagram), toot (Mastodon), reddit, youtube-data
+- **HR collection** - bamboohr, greenhouse
+- **Ecommerce collection** - woocommerce, bigcommerce (+ Shopify reassigned)
+- **Testing collection** - artillery, newman (+ k6 reassigned)
+- **210 tools** across 24 collections
 - Protocol v0.7.x - GitHub topics, supply chain security, versioning spec
 
 ### v0.2.0 (April 2026)
