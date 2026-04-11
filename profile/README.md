@@ -3,7 +3,7 @@
 [![GitHub](https://img.shields.io/badge/github-forma--tools%2Fforma-blue?logo=github)](https://github.com/forma-tools/forma)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Tools](https://img.shields.io/badge/tools-213-orange.svg)](#available-tools)
+[![Tools](https://img.shields.io/badge/tools-217-orange.svg)](#available-tools)
 
 > A unified CLI ecosystem for agentic development.
 
@@ -11,7 +11,7 @@ Forma is a protocol and ecosystem that standardises CLI tools for consistent beh
 
 The core insight: AI assistants and power users need tools that behave consistently. When every CLI has its own quirks, automation breaks. Forma solves this by defining a protocol that covers command structure, JSON output shapes, exit codes, authentication patterns, and stream separation. Any tool that follows the protocol becomes instantly usable by both humans and AI.
 
-The ecosystem includes 85 Forma CLIs for popular SaaS APIs, 79 vendor CLIs, 48 system tools, and an MCP server - 213 capabilities across 24 collections, tracked in a central registry. An always-on daemon with a persistent Claude session orchestrates the ecosystem - discovering new tools, building them autonomously, verifying compliance, writing tests, and maintaining registry integrity. It accumulates knowledge as flat files, runs daily quality sweeps, and is accessible from anywhere via remote control.
+The ecosystem includes 87 Forma CLIs for popular SaaS APIs, 81 vendor CLIs, 48 system tools, and an MCP server - 217 capabilities across 24 collections, tracked in a central registry. An always-on daemon with a persistent Claude session orchestrates the ecosystem - discovering new tools, building them autonomously, verifying compliance, writing tests, and maintaining registry integrity. It accumulates knowledge as flat files, runs daily quality sweeps, and is accessible from anywhere via remote control.
 
 ## Why Forma?
 
@@ -62,10 +62,10 @@ MCP is great for 2-3 frequently-used integrations. Forma is for ecosystems of 10
 
 ```
 +-----------------------------------------------------------------------------------+
-|                        FORMA ECOSYSTEM (213 capabilities)                         |
+|                        FORMA ECOSYSTEM (217 capabilities)                         |
 +-----------------------------------------------------------------------------------+
 |                                                                                   |
-|  85 Forma CLIs        79 Vendor CLIs        48 System Tools       1 MCP          |
+|  87 Forma CLIs        81 Vendor CLIs        48 System Tools       1 MCP          |
 |  +---------+--+--+     +-----+-----+--+     +-----+-----+--+     +-----+        |
 |  |xero|harv|..|  |     |gws|gh|wrng|  |     |jq|ffm|pan|  |     |cf-mcp|       |
 |  +----+----+--+--+     +---+--+----+--+     +--+---+---+--+     +------+        |
@@ -207,7 +207,7 @@ forma daemon memory search "auth"        # Find specific knowledge
 
 ## Registry and Discovery
 
-The Forma registry is the central mechanism for tool discovery. 213 tools across 24 collections.
+The Forma registry is the central mechanism for tool discovery. 217 tools across 24 collections.
 
 ### How It Works
 
@@ -222,9 +222,9 @@ The Forma registry is the central mechanism for tool discovery. 213 tools across
 |------------|-------|-------------|
 | devtools | 25 | Code search, analysis, version control, package management |
 | data | 23 | Archival, research, bookmarks |
-| infra | 21 | Cloud, deployment, CDN |
+| infra | 20 | Cloud, deployment, CDN |
 | osint | 19 | Open-source intelligence, reconnaissance |
-| comms | 15 | Messaging, email, voice, scheduling |
+| comms | 17 | Messaging, email, voice, scheduling |
 | ai | 13 | LLM, search, speech synthesis |
 | media | 13 | Audio, video, design tools |
 | finance | 12 | Accounting, payments, exchange rates |
@@ -239,11 +239,11 @@ The Forma registry is the central mechanism for tool discovery. 213 tools across
 | crypto | 7 | Cryptocurrency data |
 | crawl | 6 | Web scraping, crawling, change detection |
 | secrets | 6 | Secrets management, identity, and access control |
-| crm | 5 | CRM, sales, customer success, contracts |
-| social | 5 | Social media platforms and community tools |
+| crm | 6 | CRM, sales, customer success, contracts |
+| social | 7 | Social media platforms and community tools |
 | ecommerce | 3 | Ecommerce platforms, storefronts, and inventory |
-| testing | 3 | Load testing, synthetic monitoring, and test data |
-| hr | 2 | HR, hiring, payroll, and people management |
+| testing | 4 | Load testing, synthetic monitoring, and test data |
+| hr | 3 | HR, hiring, payroll, and people management |
 
 ## The Protocol
 
