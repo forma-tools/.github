@@ -2,11 +2,11 @@
 
 > A unified CLI ecosystem for agentic development.
 
-Forma is a protocol, ecosystem, and agent runtime that standardises CLI tools for consistent behaviour across agentic workflows. 200+ tools, 44 AI models, 67 skills, one coherent system.
+Forma is a protocol, ecosystem, and agent runtime that standardises CLI tools for consistent behaviour across agentic workflows. 240 tools, 44 AI models, 67 skills, one coherent system.
 
 ## What It Does
 
-**For users**: One `forma setup` and you have an AI agent with 200+ tools, a background daemon, and connections to Telegram/Slack/Discord. Ask it to check your invoices, monitor your services, or build you a daily news digest.
+**For users**: One `forma setup` and you have an AI agent with 240 tools, a background daemon, and connections to Telegram/Slack/Discord. Ask it to check your invoices, monitor your services, or build you a daily news digest.
 
 **For developers**: Build CLI tools that work in agentic workflows. Follow the protocol, get discovery, chaining, auth, and AI compatibility for free.
 
@@ -53,9 +53,9 @@ User (CLI / Telegram / Slack / Discord)
 │         │                                           │
 │         ▼                                           │
 │  ┌──────────────────────────────────────────────┐   │
-│  │  200+ CLI Tools (subprocess isolation)        │   │
-│  │  forma/ (91 Forma CLIs)                       │   │
-│  │  vendor/ (84 vendor CLIs)                     │   │
+│  │  240 CLI Tools (subprocess isolation)          │   │
+│  │  forma/ (105 Forma CLIs)                      │   │
+│  │  vendor/ (88 vendor CLIs)                     │   │
 │  └──────────────────────────────────────────────┘   │
 └──────────────────────────────────────────────────────┘
 ```
@@ -139,7 +139,7 @@ forma setup
 ```
 
 9-step interactive wizard:
-1. Choose collections (200+ tools across 24 domains)
+1. Choose collections (240 tools across 24 domains)
 2. Download tools from GitHub
 3. Install into isolated per-tool venvs
 4. Choose AI model (44 options, featured picker)
