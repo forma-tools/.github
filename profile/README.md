@@ -60,6 +60,58 @@ User (CLI / Telegram / Slack / Discord)
 └──────────────────────────────────────────────────────┘
 ```
 
+## The Protocol
+
+Forma is a **specification** before it's a toolset. Every CLI in the ecosystem implements the same 27-section contract, and that contract is what lets 240+ tools behave as a single coherent system instead of 240 one-off scripts.
+
+```bash
+<tool> <resource> <action> [OPTIONS]
+```
+
+One command grammar. One `{data, meta}` output envelope. stdout for data, stderr for humans — strictly separated. Semantic exit codes (`0` success · `2` auth · `3` not found · `4` validation · `5` conflict · `6` rate limit · `7` server). Deterministic `auth login/status/logout/use` across every tool. Self-describing at every level via `--help` and `describe`. Declared safety tier on every mutating operation. Caching with `--no-cache` and `--refresh` escape hatches. Lockfiles and 7-day dependency quarantine. SemVer discipline with an explicit stability contract.
+
+### The 27 sections
+
+| # | Section | What it covers |
+|---|---------|----------------|
+| 1 | **Philosophy** | Core principles — stdout sacred, stderr human, fail fast, help exhaustive |
+| 2 | **Command Architecture** | `<tool> <resource> <action>` shape, noun-before-verb, consistent across the ecosystem |
+| 3 | **Flags & Options** | Standard flags (`--json`, `--limit`, `--fields`), naming rules, type handling |
+| 4 | **Output Specification** | The `{data, meta}` envelope, UTF-8, deterministic shape, stream separation |
+| 5 | **Exit Codes** | Semantic 0–7: success, auth required, not found, validation, conflict, rate limit, server error |
+| 6 | **Error Handling** | Error object shape, `retry-after` surfacing, timeout behaviour, partial-success rules |
+| 7 | **Agent Safety** | Risk tiers, confirmation gates, destructive-op declarations, prompt-injection defence |
+| 8 | **Help System** | `--help` at every level (tool/resource/action), example-first, machine-parseable headers |
+| 9 | **Introspection** | `describe` subcommand emits capability manifests for agent discovery |
+| 10 | **Skill Specification** | Embedding multi-step procedures inside tools as loadable skills |
+| 11 | **Authentication** | `auth login/status/logout/use`, keyring primary, `.env` fallback, profile switching |
+| 12 | **Data Conventions** | ISO-8601 dates, string IDs, currency objects, enum casing, null handling |
+| 13 | **Filtering & Pagination** | `--limit`, `--from`, `--to`, `--status`, cursor-based pagination in `meta` |
+| 14 | **Batch & Parallel** | `--batch` file input, `--workers` concurrency, raw passthrough for bulk ops |
+| 15 | **Caching** | TTL-based defaults, `--no-cache`, `--refresh`, `meta.cache` visibility |
+| 16 | **Project Structure** | Directory layout, `pyproject.toml` conventions, package naming |
+| 17 | **Implementation Reference** | Shared boilerplate — error handlers, renderers, HTTP clients, credential wiring |
+| 18 | **Testing Protocol** | Required test categories, manual verification checklist, compliance gates |
+| 19 | **Anti-Patterns** | What breaks the contract — chatty stdout, colors in pipes, silent failures |
+| 20 | **Compliance Checklist** | Minimum-viable and complete compliance gates for registry entry |
+| 21 | **Versioning** | SemVer strict, 0.x stability contract, status lifecycle (alpha → stable → maintenance) |
+| 22 | **Releases & Changelog** | Keep-a-Changelog format, tag conventions, release workflow |
+| 23 | **Self-Update** | `<tool> update` mechanism, version check, rollback on failure |
+| 24 | **Supply Chain Security** | Lockfiles required, 7-day dependency quarantine, vulnerability scanning |
+| 25 | **README & GitHub Conventions** | README structure, badges, repo topics, default settings |
+| 26 | **Filesystem Conventions** | Root discovery, workspaces, output paths, presets, cache locations |
+| 27 | **Registry Specification** | Unified registry schema, collections, entry format, capability declarations |
+
+### Why this matters
+
+Without a protocol, 240 tools is 240 learning curves. With one, it's a single grammar plus a directory of resources — every hour spent learning Forma amortises across every tool you'll ever use in the ecosystem.
+
+For AI agents, the protocol is the critical substrate. Autonomous tool chaining is impossible when tools disagree about how to report errors, paginate, or authenticate. Forma's contract is what lets an agent pipe `tool A → tool B → tool C` with full confidence about shapes, exit codes, and failure modes — no schema inference, no error-message parsing, no per-tool adaptation layer.
+
+**Full specification**: [27 sections](https://github.com/forma-tools/forma/tree/main/docs/protocol) with implementation reference, testing requirements, and compliance checklists.
+
+---
+
 ## Agent Engine
 
 The agent is model-agnostic with zero external dependencies. Direct HTTP to each provider - no LiteLLM, no middleware.
@@ -148,20 +200,6 @@ forma setup
 7. Choose agent personality (13 styles)
 8. Explore use case suggestions
 9. Start the background daemon
-
-## The Protocol
-
-All Forma CLIs follow the [Forma Protocol](docs/protocol/00-index.md):
-
-```bash
-<tool> <resource> <action> [OPTIONS]
-```
-
-- `--json` for machine-readable output
-- `--help` for discovery
-- Consistent exit codes (0=success, 2=auth required, 3=not found)
-- `{data: [...], meta: {...}}` JSON envelope
-- `<tool> auth login/status/logout` for credentials
 
 ## YAML Tool Plugins
 
