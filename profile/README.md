@@ -2,11 +2,11 @@
 
 > A unified CLI ecosystem for agentic development.
 
-Forma is a protocol, ecosystem, and agent runtime that standardises CLI tools for consistent behaviour across agentic workflows. 240 tools, 44 AI models, 67 skills, one coherent system.
+Forma is a protocol, ecosystem, and agent runtime that standardises CLI tools for consistent behaviour across agentic workflows. 261 tools, 44 AI models, 68 skills, one coherent system.
 
 ## What It Does
 
-**For users**: One `forma setup` and you have an AI agent with 240 tools, a background daemon, and connections to Telegram/Slack/Discord. Ask it to check your invoices, monitor your services, or build you a daily news digest.
+**For users**: One `forma setup` and you have an AI agent with 261 tools, a background daemon, and connections to Telegram/Slack/Discord. Ask it to check your invoices, monitor your services, or build you a daily news digest.
 
 **For developers**: Build CLI tools that work in agentic workflows. Follow the protocol, get discovery, chaining, auth, and AI compatibility for free.
 
@@ -38,7 +38,7 @@ User (CLI / Telegram / Slack / Discord)
 │  Forma Agent Engine                                  │
 │                                                      │
 │  ┌─────────────┐  ┌──────────────┐  ┌────────────┐ │
-│  │ 44 Models    │  │ 8 Built-in   │  │ 67 Skills  │ │
+│  │ 44 Models    │  │ 8 Built-in   │  │ 68 Skills  │ │
 │  │ 8 Providers  │  │ Tools        │  │ On-demand  │ │
 │  │ Zero deps    │  │ + CLI Tools  │  │ Procedures │ │
 │  └──────┬──────┘  └──────┬───────┘  └─────┬──────┘ │
@@ -53,40 +53,40 @@ User (CLI / Telegram / Slack / Discord)
 │         │                                           │
 │         ▼                                           │
 │  ┌──────────────────────────────────────────────┐   │
-│  │  240 CLI Tools (subprocess isolation)          │   │
-│  │  forma/ (105 Forma CLIs)                      │   │
-│  │  vendor/ (88 vendor CLIs)                     │   │
+│  │  214 CLI Tools (subprocess isolation)          │   │
+│  │  forma/ (127 Forma CLIs)                      │   │
+│  │  vendor/ (87 vendor CLIs)                     │   │
 │  └──────────────────────────────────────────────┘   │
 └──────────────────────────────────────────────────────┘
 ```
 
 ## The Protocol
 
-Forma is a **specification** before it's a toolset. Every CLI in the ecosystem implements the same 27-section contract, and that contract is what lets 240+ tools behave as a single coherent system instead of 240 one-off scripts.
+Forma is a **specification** before it's a toolset. Every CLI in the ecosystem implements the same 33-section contract, and that contract is what lets 261 tools behave as a single coherent system instead of 261 one-off scripts.
 
 ```bash
 <tool> <resource> <action> [OPTIONS]
 ```
 
-One command grammar. One `{data, meta}` output envelope. stdout for data, stderr for humans — strictly separated. Semantic exit codes (`0` success · `2` auth · `3` not found · `4` validation · `5` conflict · `6` rate limit · `7` server). Deterministic `auth login/status/logout/use` across every tool. Self-describing at every level via `--help` and `describe`. Declared safety tier on every mutating operation. Caching with `--no-cache` and `--refresh` escape hatches. Lockfiles and 7-day dependency quarantine. SemVer discipline with an explicit stability contract.
+One command grammar. One `{data, meta}` output envelope. stdout for data, stderr for humans — strictly separated. Semantic exit codes (`0` success · `2` auth · `3` not found · `4` validation · `5` conflict · `6` rate limit · `7` server). Deterministic `auth login/status/logout/use` across every tool. Self-describing at every level via `--help` and `describe`. Declared safety tier on every mutating operation. Caching with `--no-cache` and `--refresh` escape hatches. Pluggable auth backends with typed credentials and migration. Structured JSONL logging with PII redaction. Lockfiles and 7-day dependency quarantine. SemVer discipline with an explicit stability contract.
 
-### The 27 sections
+### The 33 sections
 
 | # | Section | What it covers |
 |---|---------|----------------|
 | 1 | **Philosophy** | Core principles — stdout sacred, stderr human, fail fast, help exhaustive |
 | 2 | **Command Architecture** | `<tool> <resource> <action>` shape, noun-before-verb, consistent across the ecosystem |
-| 3 | **Flags & Options** | Standard flags (`--json`, `--limit`, `--fields`), naming rules, type handling |
+| 3 | **Flags & Options** | Standard flags (`--json`, `--limit`, `--count`, `--confirm`, `--read-only`), naming rules |
 | 4 | **Output Specification** | The `{data, meta}` envelope, UTF-8, deterministic shape, stream separation |
-| 5 | **Exit Codes** | Semantic 0–7: success, auth required, not found, validation, conflict, rate limit, server error |
+| 5 | **Exit Codes** | Semantic 0-9 with HTTP mapping: success, auth, not found, validation, conflict, rate limit, server |
 | 6 | **Error Handling** | Error object shape, `retry-after` surfacing, timeout behaviour, partial-success rules |
-| 7 | **Agent Safety** | Risk tiers, confirmation gates, destructive-op declarations, prompt-injection defence |
+| 7 | **Agent Safety** | Risk tiers, `--read-only` mode, confirmation gates, prompt-injection defence |
 | 8 | **Help System** | `--help` at every level (tool/resource/action), example-first, machine-parseable headers |
-| 9 | **Introspection** | `describe` subcommand emits capability manifests for agent discovery |
+| 9 | **Introspection** | `describe` and `doctor` subcommands for capability manifests and health checks |
 | 10 | **Skill Specification** | Embedding multi-step procedures inside tools as loadable skills |
-| 11 | **Authentication** | `auth login/status/logout/use`, keyring primary, `.env` fallback, profile switching |
+| 11 | **Authentication** | `auth login/status/logout/use`, pluggable backends, profile switching |
 | 12 | **Data Conventions** | ISO-8601 dates, string IDs, currency objects, enum casing, null handling |
-| 13 | **Filtering & Pagination** | `--limit`, `--from`, `--to`, `--status`, cursor-based pagination in `meta` |
+| 13 | **Filtering & Pagination** | `--limit`, `--all`, `--sort`, `--count`, cursor-based pagination in `meta` |
 | 14 | **Batch & Parallel** | `--batch` file input, `--workers` concurrency, raw passthrough for bulk ops |
 | 15 | **Caching** | TTL-based defaults, `--no-cache`, `--refresh`, `meta.cache` visibility |
 | 16 | **Project Structure** | Directory layout, `pyproject.toml` conventions, package naming |
@@ -101,14 +101,20 @@ One command grammar. One `{data, meta}` output envelope. stdout for data, stderr
 | 25 | **README & GitHub Conventions** | README structure, badges, repo topics, default settings |
 | 26 | **Filesystem Conventions** | Root discovery, workspaces, output paths, presets, cache locations |
 | 27 | **Registry Specification** | Unified registry schema, collections, entry format, capability declarations |
+| 28 | **Logging** | Structured JSONL journal, PII redaction on write, retention tiers, event schema |
+| 29 | **MCP Integration** | Per-tool MCP server, `describe` → MCP mapping, auth delegation |
+| 30 | **MCP Tool Design** | Tiered surfaces, materialised views, persona-driven design, `capabilities()` keystone |
+| 31 | **Test Results** | Per-test outcome log, flake detection, history tiers, integration with `forma log` |
+| 32 | **Security** | Threat model, three-layer secrets enforcement, redaction, transport, incident response |
+| 33 | **Auth Backends** | `forma_auth` v1.0 — backend protocol, typed credentials, priority chain, migration, rotation |
 
 ### Why this matters
 
-Without a protocol, 240 tools is 240 learning curves. With one, it's a single grammar plus a directory of resources — every hour spent learning Forma amortises across every tool you'll ever use in the ecosystem.
+Without a protocol, 261 tools is 261 learning curves. With one, it's a single grammar plus a directory of resources — every hour spent learning Forma amortises across every tool you'll ever use in the ecosystem.
 
 For AI agents, the protocol is the critical substrate. Autonomous tool chaining is impossible when tools disagree about how to report errors, paginate, or authenticate. Forma's contract is what lets an agent pipe `tool A → tool B → tool C` with full confidence about shapes, exit codes, and failure modes — no schema inference, no error-message parsing, no per-tool adaptation layer.
 
-**Full specification**: [27 sections](https://github.com/forma-tools/forma/tree/main/docs/protocol) with implementation reference, testing requirements, and compliance checklists.
+**Full specification**: [33 sections](https://github.com/forma-tools/forma/tree/main/docs/protocol) with implementation reference, testing requirements, and compliance checklists.
 
 ---
 
@@ -146,11 +152,11 @@ Switch models: `forma model set gemini-3-flash`
 
 Plus all installed CLI tools (weather, xero, linear, etc.)
 
-### 67 Skills
+### 68 Skills
 
 Pre-built procedures for common tasks. The agent loads them on demand:
 
-git-ops, python-ops, debug-ops, security-ops, docker-ops, react-ops, typescript-ops, testing-ops, perf-ops, auth-ops, ci-cd-ops, postgres-ops, refactor-ops, scaffold, and 53 more.
+git-ops, python-ops, debug-ops, security-ops, docker-ops, react-ops, typescript-ops, testing-ops, perf-ops, auth-ops, ci-cd-ops, postgres-ops, refactor-ops, scaffold, forma-monitor, and 53 more.
 
 ### Safety Model
 
@@ -184,6 +190,20 @@ forma daemon status
 
 Connect from Telegram, Slack, Discord, WhatsApp, or Signal.
 
+## Ecosystem Journal
+
+Structured JSONL logging with PII redaction. Every tool, agent, and skill can write to the shared journal.
+
+```bash
+forma log emit "registered tessitura" --source forma-warden
+forma log tail --source forma-inspector --level error
+forma log query --since 1d --keyword "tessitura" --json
+forma log stats
+forma log clean                  # gzip >30d, delete >90d, purge debug >7d
+```
+
+Sensitive data (emails, phones, auth tokens, credentials) is redacted on write — logs never contain raw PII.
+
 ## Setup
 
 ```bash
@@ -191,9 +211,9 @@ forma setup
 ```
 
 9-step interactive wizard:
-1. Choose collections (240 tools across 24 domains)
+1. Choose collections (261 tools across 25 domains)
 2. Download tools from GitHub
-3. Install into isolated per-tool venvs
+3. Install via uv (shared cache, deduplicated)
 4. Choose AI model (44 options, featured picker)
 5. Connect tool accounts (OAuth/API keys)
 6. Set up workspace context
